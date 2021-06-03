@@ -12,7 +12,7 @@ def verify_java_command(path):
         # why is the output inside stderr?
         output=command.stderr.decode('utf-8')
 
-        if(output.find):
+        if(output.find("openjdk version")):
             return True
         # print(output.find("openjdk version"))
     except FileNotFoundError:

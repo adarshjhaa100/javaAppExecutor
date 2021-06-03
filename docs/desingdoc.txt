@@ -9,7 +9,8 @@ Features:
 
 Steps to do(for now in single process):
 
-1. Create JDK property list(json format having name, url, sha256checksum, etc)
+1. Create JDK property list(json format having name, url, sha256checksum,
+storage location etc)
 2. Verify if JDK already present
 (done)3. Download JDK
 4. verifyintegrity, and then add the download location to the JDK's property json
@@ -18,6 +19,20 @@ Steps to do(for now in single process):
 7. Select JAR file 
 (done)8. Run JAR file
 	
+
+How do we update the JDK list?..
+	External JSON file containing updated list of JDKs
+
+
+How to proceed to run using multicore:
+
+Brief Idea:
+
+Main Program:(Parent Process)
+	|--> Download JDK:(Child Process) 
+	|--> User Interface: (Another Child Process)
+	|--> Program/JAR execution: (Child process)
+
 
 
 
