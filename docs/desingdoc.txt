@@ -3,20 +3,20 @@ Java App Launcher
 Features:
     -GUI- tkinter
     -Select jdk and download
-    -Set Java env variables(do we need this)
+    -Set Java env variables(do we need this.. no we dont)
     -compile and execute java programs(It would be ideal if we would have a jar) 
 
 
 Steps to do(for now in single process):
 
-1. Create JDK list(name, url, sha256checksum,)
+1. Create JDK property list(json format having name, url, sha256checksum, etc)
 2. Verify if JDK already present
-3. Download JDK
-4. verifyintegrity
-5. extract(maybe delete the jdk zip to save space)
+(done)3. Download JDK
+4. verifyintegrity, and then add the download location to the JDK's property json
+(done)5. extract(maybe delete the jdk zip to save space)
 6. check whether java command is working
 7. Select JAR file 
-8. Run JAR file
+(done)8. Run JAR file
 	
 
 

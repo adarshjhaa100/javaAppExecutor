@@ -6,6 +6,8 @@ import hashlib
 # SHA256: 5AEBB80215094F8FE81CA5E0937FEC8A4E2618B7B3D17A2B83DAA0E79F9890CB
 realHash= "fde3b28ca31b86a889c37528f17411cd0b9651beb6fa76cac89a223417910f4b"
 
+# its rather pointless now as we've added check using the java version command, 
+# but still learnt a lot from this 
 def verify_integrity(fileObj,real_hash):
     print("Checking for file integrity")
     hash_of_jdkzip=hashlib.sha256()
