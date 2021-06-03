@@ -1,0 +1,7 @@
+For openjdk
+{'Accept-Ranges': 'bytes', 'Content-Type': 'application/zip', 
+'Server': 'AkamaiNetStorage', 'Last-Modified': 'Thu, 23 Aug 2018 02:25:01 GMT', 
+'ETag': '"3aeeba6c38da80104c7fdd221881b52e:1535404541.397194"', 
+'Content-Length': '187396683', 'Date': 'Wed, 02 Jun 2021 06:38:16 GMT', 
+'Connection': 'keep-alive'}
+     
