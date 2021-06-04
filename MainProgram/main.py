@@ -27,10 +27,13 @@ class JDK:
         self.path:str=BASE_PATH+"/"+self.name+".zip" #should i take a path or generate it?
         self.downloaded:bool=False
         self.internalFolder=internalFolder
+        self.binPath=""
 
     # try to create a different child process for this
+    # download, verify integrity(sha256) and unzip
     def download_jdk(self):
         if(os.path.isfile(self.path)):
+            self.binPath=""
             print("jdk file already exists skipping download")
             return True
 
@@ -65,7 +68,7 @@ class JDK:
         return False
 
 
-    # integrity check for jdk
+    # integrity check for jdk(sha256)
     def verify_integrity(self,file,hash):
         print("Checking for file integrity")
         hash_of_jdkzip=hashlib.sha256()
@@ -83,30 +86,62 @@ class JDK:
     def unzip(self):
         with zipfile.ZipFile(self.path,"r") as zip:
             zip.extractall(BASE_PATH+"/"+self.name)
-            # zip.extractall(BASE_PATH)
 
     # checks for java version
-    def verify_java_command(self):
+    def verify_java_command(self, showOutput=True):
         try:
             # Run command and get output/error using subprocess.run
             # If just want to run commands w/o output, use subprocess.call([args]) 
-            print(BASE_PATH+"/"+self.name+"/jdk11"+BIN_JAVA)
-            command=subprocess.run([BASE_PATH+"/"+self.name+"/jdk-11"+BIN_JAVA,"-version"],capture_output=True)
+            if(len(self.binPath)==0):
+                self.binPath=BASE_PATH+"/"+self.name+"/jdk-11"+BIN_JAVA
+            
+            binPath=self.binPath
+            command=subprocess.run([binPath,"-version"],capture_output=True)
+            
             # why is the output inside stderr?
             output=command.stderr.decode('utf-8')
-            print(output)
-            if(output.find("openjdk version")):
+            if(showOutput):
+                print(output)
+            
+            # will be done once per jdk
+            if(output.find("openjdk version")>-1):
+                self.binPath=BASE_PATH+"/"+self.name+"/jdk-11"+BIN_JAVA
                 return True
+
         except FileNotFoundError:
             print("file not found")
             return False
 
+    # please choose JAR files to run,.java is fine until you use builtin dependencies, 
+    # I dont guarentee of adding external dependencies
+    # Please for now add the absolute path of the java application
+    def run_java(self,java_file_path,mode):
+        command=""
+        print("executing java file")
+        # check if java runs
+        if(self.verify_java_command()==False):
+            return "Cannot Run the java command"    
+        
+        if(mode=="JAR"):
+            command=subprocess.run([self.binPath,"-jar",java_file_path], capture_output=True)
+        else:
+            command=subprocess.run([self.binPath,java_file_path],capture_output=True)
+        print(command.stdout.decode())
+        return "successfully ran the java command"
 
 # name, url, checksum, path
 jdk={"name":"openjdk-11",
      "insidefoldername":"jdk-11",
     "url":"https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_windows-x64_bin.zip",
     "checksum":"fde3b28ca31b86a889c37528f17411cd0b9651beb6fa76cac89a223417910f4b"}
+
+
+# function to load jdk lists
+def load_jdk_list():
+    # only create jdk object if we can verify bin path
+    pass
+
+
 
 
 # Main code
@@ -116,3 +151,6 @@ if __name__=="__main__":
     # print(jdk1.__dict__)
     jdk1.download_jdk()
     jdk1.verify_java_command()
+
+    jdk1.run_java("D:/cs/PythonMaterial/HobbyProjects/javaAppExecutor/sampleJavaFiles/HelloWorld.java",mode="JAVA")
+    # print(jdk1.__dict__)

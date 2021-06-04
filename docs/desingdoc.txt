@@ -20,6 +20,13 @@ storage location etc)
 (done)8. Run JAR file
 	
 
+should i save jdklist?
+	Inside what? 
+		A json file
+		A databse
+		bin file
+
+
 How do we update the JDK list?..
 	External JSON file containing updated list of JDKs
 
@@ -33,6 +40,8 @@ Main Program:(Parent Process)
 	|--> User Interface: (Another Child Process)
 	|--> Program/JAR execution: (Child process)
 
-
+In Future:
+	May add a task manager(more simply, process viewer) to show the child
+	processes and close them at whim
 
 

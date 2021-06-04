@@ -20,5 +20,21 @@ storage location etc)
 (done)8. Run JAR file
 	
 
+How do we update the JDK list?..
+	External JSON file containing updated list of JDKs
+
+
+How to proceed to run using multicore:
+
+Brief Idea:
+
+Main Program:(Parent Process)
+	|--> Download JDK:(Child Process) 
+	|--> User Interface: (Another Child Process)
+	|--> Program/JAR execution: (Child process)
+
+In Future:
+	May add a task manager(more simply, process viewer) to show the child
+	processes and close them at whim
 
 
