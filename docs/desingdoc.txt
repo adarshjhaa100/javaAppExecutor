@@ -44,4 +44,3 @@ In Future:
 	May add a task manager(more simply, process viewer) to show the child
 	processes and close them at whim
 
-

@@ -4,8 +4,7 @@ import os
 import hashlib
 import zipfile
 import subprocess
-
-# os.path.isfile()
+import json
 
 BIN_JAVA="/bin/java"
 
@@ -17,6 +16,7 @@ if(~os.listdir().__contains__(BASE_PATH)):
         os.mkdir(BASE_PATH)
     except FileExistsError:
         pass    
+
 
 # class to store properties of JDK
 class JDK:
@@ -67,7 +67,6 @@ class JDK:
         self.downloaded=True
         return False
 
-
     # integrity check for jdk(sha256)
     def verify_integrity(self,file,hash):
         print("Checking for file integrity")
@@ -88,12 +87,12 @@ class JDK:
             zip.extractall(BASE_PATH+"/"+self.name)
 
     # checks for java version
-    def verify_java_command(self, showOutput=True):
+    def verify_java_command(self, showOutput=False):
         try:
             # Run command and get output/error using subprocess.run
             # If just want to run commands w/o output, use subprocess.call([args]) 
             if(len(self.binPath)==0):
-                self.binPath=BASE_PATH+"/"+self.name+"/jdk-11"+BIN_JAVA
+                self.binPath=BASE_PATH+"/"+self.name+"/"+self.internalFolder+BIN_JAVA
             
             binPath=self.binPath
             command=subprocess.run([binPath,"-version"],capture_output=True)
@@ -105,11 +104,11 @@ class JDK:
             
             # will be done once per jdk
             if(output.find("openjdk version")>-1):
-                self.binPath=BASE_PATH+"/"+self.name+"/jdk-11"+BIN_JAVA
+                self.binPath=BASE_PATH+"/"+self.name+"/"+self.internalFolder+BIN_JAVA
                 return True
 
         except FileNotFoundError:
-            print("file not found")
+            # print("file not found")
             return False
 
     # please choose JAR files to run,.java is fine until you use builtin dependencies, 
@@ -129,28 +128,55 @@ class JDK:
         print(command.stdout.decode())
         return "successfully ran the java command"
 
-# name, url, checksum, path
-jdk={"name":"openjdk-11",
+
+
+# name, insidefoldername, checksum, url
+# can scrape this from the web
+jdks=[{"name":"openjdk-11",
      "insidefoldername":"jdk-11",
     "url":"https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_windows-x64_bin.zip",
-    "checksum":"fde3b28ca31b86a889c37528f17411cd0b9651beb6fa76cac89a223417910f4b"}
+    "checksum":"fde3b28ca31b86a889c37528f17411cd0b9651beb6fa76cac89a223417910f4b"},
+    {"name":"openjdk-15",
+     "insidefoldername":"jdk-15",
+    "url":"https://download.java.net/openjdk/jdk15/ri/openjdk-15+36_windows-x64_bin.zip",
+    "checksum":"764e39a71252a9791118a31ae56a4247c049463bda5eb72497122ec50b1d07f8"},
+    {"name":"openjdk-16",
+     "insidefoldername":"jdk-16",
+    "url":"https://download.java.net/openjdk/jdk16/ri/openjdk-16+36_windows-x64_bin.zip",
+    "checksum":"a78bdeaad186297601edac6772d931224d7af6f682a43372e693c37020bd37d6"}
+]   
 
 
 # function to load jdk lists
-def load_jdk_list():
+# maybe i can store the info whether a jdk is downloaded or not
+def load_jdks():
     # only create jdk object if we can verify bin path
-    pass
+    jdk_file=open("jdk_list.json","r+")
+    jdk_list=json.load(jdk_file)
+    print(jdk_list)
 
+    print("Choose the jdk:")
+    for jdk_details in jdk_list:
+        obj=JDK(jdk_details["name"], jdk_details["url"], jdk_details["checksum"],jdk_details["insidefoldername"])
+        if(obj.verify_java_command()):
+            print(jdk_details["name"],"Downloaded")
+        else:
+            print(jdk_details["name"],"Not Downloaded")
+    
+    choice=int(input())
+    chosen_jdk=jdk_list[choice-1]
+    jdk_obj=JDK(chosen_jdk["name"], chosen_jdk["url"], chosen_jdk["checksum"],chosen_jdk["insidefoldername"])
+    return jdk_obj
 
 
 
 # Main code
 if __name__=="__main__":
-    jdk1=JDK(jdk["name"], jdk["url"], jdk["checksum"],jdk["insidefoldername"])
-    # the dict object of a python class can be obtained using
-    # print(jdk1.__dict__)
+    jdk1=load_jdks()
     jdk1.download_jdk()
     jdk1.verify_java_command()
 
-    jdk1.run_java("D:/cs/PythonMaterial/HobbyProjects/javaAppExecutor/sampleJavaFiles/HelloWorld.java",mode="JAVA")
+    print("Enter java file path:")
+    java_file=str(input())
+    jdk1.run_java(java_file,mode="JAVA")
     # print(jdk1.__dict__)
